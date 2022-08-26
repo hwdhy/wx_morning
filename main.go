@@ -11,7 +11,9 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
+	"wx_morning/utools"
 )
 
 // CityWeatherData 城市数据
@@ -116,8 +118,40 @@ func GetDay(startTime time.Time) string {
 }
 
 // GetBirthdayLeft 获取距离下次生日的时间
-func GetBirthdayLeft(date string) string {
-	next := TimeStringToGoTime(strconv.Itoa(time.Now().Year()) + "-" + date)
+func GetBirthdayLeft(date string, birthdayType int) string {
+	var next time.Time
+	// 判断是农历还是公历
+	if birthdayType == 1 {
+		// 农历转阳历
+		splitData := strings.Split(date, "-")
+		month, _ := strconv.Atoi(splitData[0])
+		day, _ := strconv.Atoi(splitData[1])
+		solar := utools.ConvertLunarToSolar(time.Now().Year(), month, day, false)
+
+		var solarStr [3]string
+		for k, v := range solar {
+			if v < 10 {
+				solarStr[k] = "0" + strconv.Itoa(v)
+			} else {
+				solarStr[k] = strconv.Itoa(v)
+			}
+		}
+		next = TimeStringToGoTime(solarStr[0] + "-" + solarStr[1] + "-" + solarStr[2])
+		// 如果转换后的阳历时间小于当前时间，获取下一年的阳历时间
+		if next.Sub(time.Now()).Hours()/24 < 0 {
+			solar = utools.ConvertLunarToSolar(time.Now().Year()+1, month, day, false)
+			for k, v := range solar {
+				if v < 10 {
+					solarStr[k] = "0" + strconv.Itoa(v)
+				} else {
+					solarStr[k] = strconv.Itoa(v)
+				}
+			}
+			next = TimeStringToGoTime(solarStr[0] + "-" + solarStr[1] + "-" + solarStr[2])
+		}
+	} else {
+		next = TimeStringToGoTime(strconv.Itoa(time.Now().Year()) + "-" + date)
+	}
 
 	subDay := next.Sub(time.Now()).Hours() / 24
 	if subDay > 0 {
@@ -184,6 +218,7 @@ func main() {
 	appSecret := "ff4aae1e42471d863d335dc4bc5d958a"
 	city := "长沙"
 	startData := "2022-07-09"
+	birthdayType := 1 // 1: 农历   2: 阳历
 	birthday := "07-15"
 
 	for _, userId := range userIds {
@@ -232,7 +267,7 @@ func main() {
 					Color: GetColor(),
 				},
 				"birthday_left": {
-					Value: GetBirthdayLeft(birthday),
+					Value: GetBirthdayLeft(birthday, birthdayType),
 					Color: GetColor(),
 				},
 				"words": {
