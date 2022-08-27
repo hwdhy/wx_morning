@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/robfig/cron"
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
 	offConfig "github.com/silenceper/wechat/v2/officialaccount/config"
@@ -221,68 +222,79 @@ func main() {
 	birthdayType := 1 // 1: 农历   2: 阳历
 	birthday := "07-15"
 
-	for _, userId := range userIds {
-		wc := wechat.NewWechat()
-		memory := cache.NewMemory()
+	c := cron.New()
+	spec := "0 0 8 * * ?"
+	err := c.AddFunc(spec, func() {
+		for _, userId := range userIds {
+			wc := wechat.NewWechat()
+			memory := cache.NewMemory()
 
-		oa := wc.GetOfficialAccount(&offConfig.Config{
-			AppID:     appId,
-			AppSecret: appSecret,
-			Token:     "CATER123123",
-			Cache:     memory,
-		})
+			oa := wc.GetOfficialAccount(&offConfig.Config{
+				AppID:     appId,
+				AppSecret: appSecret,
+				Token:     "CATER123123",
+				Cache:     memory,
+			})
 
-		weather := GetWeather("长沙")
-		templateMsg := &message.TemplateMessage{
-			ToUser:     userId,
-			TemplateID: templateId,
-			Color:      GetColor(),
-			Data: map[string]*message.TemplateDataItem{
-				"city": {
-					Value: city,
-					Color: GetColor(),
+			weather := GetWeather("长沙")
+			templateMsg := &message.TemplateMessage{
+				ToUser:     userId,
+				TemplateID: templateId,
+				Color:      GetColor(),
+				Data: map[string]*message.TemplateDataItem{
+					"city": {
+						Value: city,
+						Color: GetColor(),
+					},
+					"data": {
+						Value: time.Now().Format("2006年01月02日"),
+						Color: GetColor(),
+					},
+					"weather": {
+						Value: weather.Weather,
+						Color: GetColor(),
+					},
+					"temperature": {
+						Value: strconv.FormatFloat(weather.Temp, 'f', -1, 64),
+						Color: GetColor(),
+					},
+					"highest": {
+						Value: strconv.FormatFloat(weather.High, 'f', -1, 64),
+						Color: GetColor(),
+					},
+					"lowest": {
+						Value: strconv.FormatFloat(weather.Low, 'f', -1, 64),
+						Color: GetColor(),
+					},
+					"love_days": {
+						Value: GetDay(TimeStringToGoTime(startData)),
+						Color: GetColor(),
+					},
+					"birthday_left": {
+						Value: GetBirthdayLeft(birthday, birthdayType),
+						Color: GetColor(),
+					},
+					"words": {
+						Value: GetWords(),
+						Color: GetColor(),
+					},
 				},
-				"data": {
-					Value: time.Now().Format("2006年01月02日"),
-					Color: GetColor(),
-				},
-				"weather": {
-					Value: weather.Weather,
-					Color: GetColor(),
-				},
-				"temperature": {
-					Value: strconv.FormatFloat(weather.Temp, 'f', -1, 64),
-					Color: GetColor(),
-				},
-				"highest": {
-					Value: strconv.FormatFloat(weather.High, 'f', -1, 64),
-					Color: GetColor(),
-				},
-				"lowest": {
-					Value: strconv.FormatFloat(weather.Low, 'f', -1, 64),
-					Color: GetColor(),
-				},
-				"love_days": {
-					Value: GetDay(TimeStringToGoTime(startData)),
-					Color: GetColor(),
-				},
-				"birthday_left": {
-					Value: GetBirthdayLeft(birthday, birthdayType),
-					Color: GetColor(),
-				},
-				"words": {
-					Value: GetWords(),
-					Color: GetColor(),
-				},
-			},
+			}
+
+			template := oa.GetTemplate()
+			send, err := template.Send(templateMsg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			log.Println(send, " success")
 		}
-
-		template := oa.GetTemplate()
-		send, err := template.Send(templateMsg)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		log.Println(send, " success")
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
+	c.Start()
+	defer c.Stop()
+
+	select {}
 }
