@@ -1,0 +1,11 @@
+[wx]
+appId = "wx190c5148b35ec8af"
+appSecret = "ff4aae1e42471d863d335dc4bc5d958a"
+templateId = "58cEgEMo30xWKivHUCQHjQIcgGmcE7ZFVpcWtqvZug0"
+
+[user]
+city = "长沙"
+userIds = ["oAXn15v2cBLKKI_zhj2B8786uYJc"]
+startData = "2022-07-09"
+birthdayType = 1
+birthday = "07-15"

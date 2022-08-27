@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/robfig/cron"
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
 	offConfig "github.com/silenceper/wechat/v2/officialaccount/config"
 	"github.com/silenceper/wechat/v2/officialaccount/message"
+	"github.com/spf13/viper"
 	"log"
 	"math/rand"
 	"strconv"
@@ -16,17 +18,21 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	userIds := []string{"oAXn15v2cBLKKI_zhj2B8786uYJc"}
-	templateId := "58cEgEMo30xWKivHUCQHjQIcgGmcE7ZFVpcWtqvZug0"
-	appId := "wx190c5148b35ec8af"
-	appSecret := "ff4aae1e42471d863d335dc4bc5d958a"
-	city := "长沙"
-	startData := "2022-07-09"
-	birthdayType := 1 // 1: 农历   2: 阳历
-	birthday := "07-15"
+	utools.ViperInit()
+	userIds := viper.GetStringSlice("user.userIds")
+	templateId := viper.GetString("wx.templateId")
+	appId := viper.GetString("wx.appId")
+	appSecret := viper.GetString("wx.appSecret")
+	city := viper.GetString("user.city")
+	startData := viper.GetString("user.startData")
+	birthdayType := viper.GetInt("user.birthdayType")
+	birthday := viper.GetString("user.birthday")
 
+	fmt.Println(viper.AllSettings())
 	c := cron.New()
 	spec := "0 0 8 * * ?"
+	// 测试cron表达式
+	//spec := "*/10 * * * * ?"
 	err := c.AddFunc(spec, func() {
 		for _, userId := range userIds {
 			wc := wechat.NewWechat()
