@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/robfig/cron"
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
@@ -27,8 +26,8 @@ func main() {
 	startData := viper.GetString("user.startData")
 	birthdayType := viper.GetInt("user.birthdayType")
 	birthday := viper.GetString("user.birthday")
+	token := viper.GetString("token")
 
-	fmt.Println(viper.AllSettings())
 	c := cron.New()
 	spec := "0 0 8 * * ?"
 	// 测试cron表达式
@@ -41,11 +40,11 @@ func main() {
 			oa := wc.GetOfficialAccount(&offConfig.Config{
 				AppID:     appId,
 				AppSecret: appSecret,
-				Token:     "CATER123123",
+				Token:     token,
 				Cache:     memory,
 			})
 
-			weather := service.GetWeather("长沙")
+			weather := service.GetWeather(city)
 			templateMsg := &message.TemplateMessage{
 				ToUser:     userId,
 				TemplateID: templateId,

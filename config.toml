@@ -2,6 +2,7 @@
 appId = "wx190c5148b35ec8af"
 appSecret = "ff4aae1e42471d863d335dc4bc5d958a"
 templateId = "58cEgEMo30xWKivHUCQHjQIcgGmcE7ZFVpcWtqvZug0"
+token = "CATER123123"
 
 [user]
 city = "长沙"
