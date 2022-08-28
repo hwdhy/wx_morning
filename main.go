@@ -27,11 +27,9 @@ func main() {
 	birthdayType := viper.GetInt("user.birthdayType")
 	birthday := viper.GetString("user.birthday")
 	token := viper.GetString("token")
+	spec := viper.GetString("spec")
 
 	c := cron.New()
-	spec := "0 0 8 * * ?"
-	// 测试cron表达式
-	//spec := "*/10 * * * * ?"
 	err := c.AddFunc(spec, func() {
 		for _, userId := range userIds {
 			wc := wechat.NewWechat()
