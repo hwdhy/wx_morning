@@ -10,8 +10,11 @@ userIds = ["oAXn15v2cBLKKI_zhj2B8786uYJc"]
 startData = "2022-07-09"
 birthdayType = 1
 birthday = "07-15"
-spec = "0 0 8 * * ?"
 # spec测试数据
-spec = "*/10 * * * * ?"
+#spec = "*/10 * * * * ?"
+spec = "0 0 8 * * ?"
 
+[redis]
+host = "127.0.0.1:6379"
+passwd = "dhyy"
 

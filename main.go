@@ -26,14 +26,23 @@ func main() {
 	startData := viper.GetString("user.startData")
 	birthdayType := viper.GetInt("user.birthdayType")
 	birthday := viper.GetString("user.birthday")
-	token := viper.GetString("token")
-	spec := viper.GetString("spec")
+	token := viper.GetString("wx.token")
+	spec := viper.GetString("user.spec")
 
 	c := cron.New()
 	err := c.AddFunc(spec, func() {
 		for _, userId := range userIds {
 			wc := wechat.NewWechat()
 			memory := cache.NewMemory()
+			//redisOpts := &cache.RedisOpts{
+			//	Host:        viper.GetString("redis.host"),
+			//	Database:    0,
+			//	MaxActive:   10,
+			//	MaxIdle:     10,
+			//	IdleTimeout: 60,
+			//	Password:    viper.GetString("redis.passwd"),
+			//}
+			//redisCache := cache.NewRedis(context.Background(), redisOpts)
 
 			oa := wc.GetOfficialAccount(&offConfig.Config{
 				AppID:     appId,
