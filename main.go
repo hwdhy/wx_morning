@@ -18,6 +18,11 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	utools.ViperInit()
+	Run()
+}
+
+// Run 启动函数入口
+func Run() {
 	userIds := viper.GetStringSlice("user.userIds")
 	templateId := viper.GetString("wx.templateId")
 	appId := viper.GetString("wx.appId")
@@ -49,6 +54,7 @@ func main() {
 				AppSecret: appSecret,
 				Token:     token,
 				Cache:     memory,
+				//Cache:     redisCache,
 			})
 
 			weather := service.GetWeather(city)
@@ -110,6 +116,5 @@ func main() {
 	}
 	c.Start()
 	defer c.Stop()
-
 	select {}
 }
