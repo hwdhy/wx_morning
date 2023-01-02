@@ -7,7 +7,7 @@ import (
 
 // ViperInit 初始化读取配置文件
 func ViperInit() {
-	viper.SetConfigName("config.toml")
+	viper.SetConfigName("wx_morning.toml")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
 
