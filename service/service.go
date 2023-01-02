@@ -108,7 +108,7 @@ func GetBirthdayLeft(date string, birthdayType int) string {
 // GetWords 获取彩虹屁
 func GetWords() string {
 	client := &http.Client{}
-	wordsUrl := "https://api.shadiao.pro/chp"
+	wordsUrl := "https://api.lovelive.tools/api/SweetNothings"
 	request, err := http.NewRequest("GET", wordsUrl, nil)
 	if err != nil {
 		log.Fatal("create new request err:", err)
@@ -126,11 +126,11 @@ func GetWords() string {
 		return ""
 	}
 
-	var wordsData models.Words
-	err = json.Unmarshal(readAll, &wordsData)
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-	return wordsData.Data.Text
+	//var wordsData models.Words
+	//err = json.Unmarshal(readAll, &wordsData)
+	//if err != nil {
+	//	log.Println(err)
+	//	return ""
+	//}
+	return string(readAll)
 }
