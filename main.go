@@ -19,6 +19,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 	utools.ViperInit()
 	Run()
+	log.Println("start...")
 }
 
 // Run 启动函数入口

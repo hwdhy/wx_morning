@@ -8,11 +8,12 @@ token = "CATER123123"
 city = "长沙"
 userIds = ["oAXn15v2cBLKKI_zhj2B8786uYJc"]
 startData = "2022-07-09"
+# 1农历
 birthdayType = 1
 birthday = "07-15"
 # spec测试数据
 #spec = "*/10 * * * * ?"
-spec = "0 0 6 * * ?"
+spec = "0 30 7 * * ?"
 
 [redis]
 host = "127.0.0.1:6379"

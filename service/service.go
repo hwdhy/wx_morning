@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,17 +19,17 @@ func GetWeather(city string) models.DayWeather {
 	weatherUrl := "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
 	request, err := http.NewRequest("GET", weatherUrl, nil)
 	if err != nil {
-		log.Fatal("create new request err:", err)
+		log.Println("create new request err:", err)
+		return cityData
 	}
 	response, err := client.Do(request)
 	if err != nil {
 		log.Println(err)
 		return cityData
 	}
-	//goland:noinspection GoUnhandledErrorResult
 	defer response.Body.Close()
 
-	readAll, err := ioutil.ReadAll(response.Body)
+	readAll, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Println(err)
 		return cityData
@@ -118,10 +118,9 @@ func GetWords() string {
 		log.Println(err)
 		return ""
 	}
-	//goland:noinspection GoUnhandledErrorResult
 	defer response.Body.Close()
 
-	readAll, err := ioutil.ReadAll(response.Body)
+	readAll, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Println(err)
 		return ""
