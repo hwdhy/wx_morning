@@ -16,7 +16,7 @@ import (
 func GetWeather(city string) models.DayWeather {
 	var cityData models.DayWeather
 	client := &http.Client{}
-	weatherUrl := "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
+	weatherUrl := "https://v0.yiketianqi.com/api?unescape=1&version=v91&appid=43656176&appsecret=I42og6Lm&ext=&cityid=&city=" + city
 	request, err := http.NewRequest("GET", weatherUrl, nil)
 	if err != nil {
 		log.Println("create new request err:", err)
@@ -31,21 +31,19 @@ func GetWeather(city string) models.DayWeather {
 
 	readAll, err := io.ReadAll(response.Body)
 	if err != nil {
-		log.Println(err)
+		log.Println("read all error: ", err)
 		return cityData
 	}
 
 	//file, err := os.Create("city.json")
 	//if err != nil {
 	//	log.Println(err)
-	//	return
 	//}
 	//defer file.Close()
 	//
 	//_, err = file.WriteString(string(readAll))
 	//if err != nil {
 	//	log.Println(err)
-	//	return
 	//}
 
 	var wd models.CityWeatherData
@@ -54,7 +52,11 @@ func GetWeather(city string) models.DayWeather {
 		log.Println(err)
 		return cityData
 	}
-	return wd.Data.List[0]
+	if len(wd.Data) == 0 {
+		return models.DayWeather{}
+	} else {
+		return wd.Data[0]
+	}
 }
 
 // GetDay 获取相恋天数
